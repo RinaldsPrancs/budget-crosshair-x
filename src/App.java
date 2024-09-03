@@ -1,6 +1,5 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import javax.imageio.ImageIO;
@@ -14,8 +13,10 @@ public class App {
     public static int cmWidth;
     public static int cmHeight;
     public static int cmX;
+    public static ImageIcon currentCSX;
+    public static Image bufferedImage;
     public static void changeMonitor(JFrame frame) {
-        currentMonitor++;  
+        currentMonitor++;
         if (currentMonitor == gd.length) {
             currentMonitor = 0;
         }
@@ -25,15 +26,6 @@ public class App {
 
         frame.setLocation(cmX + cmWidth / 2 - (frame.getHeight() / 2), frame.getY());
 
-
-        // if (currentMonitor == 0) {
-        //     int currentMonitorWidth = gd[currentMonitor].getDefaultConfiguration().getBounds().width;
-        //     frame.setLocation(currentMonitorWidth / 2 - (frame.getHeight() / 2), frame.getY());
-        // } else if (currentMonitor < gd.length) {
-        //     int currentMonitorX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
-        //     frame.setLocation(currentMonitorX + (currentMonitorX / 2 - (frame.getHeight() / 2)), frame.getY());
-        // }
-      
     }
 
     public static JFrame init() {
@@ -54,12 +46,15 @@ public class App {
         cmHeight = gd[currentMonitor].getDefaultConfiguration().getBounds().height;
         cmX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
         JFrame csx = init();
-        BufferedImage bufferedImage = ImageIO.read(new File("src\\crosshairs\\1.png"));
+        bufferedImage = ImageIO.read(new File("src\\crosshairs\\1.png"));
         Image image = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
-        ImageIcon icon = new ImageIcon(image);
+        currentCSX = new ImageIcon(image);
         JLabel l = new JLabel();
         csx.add(l);
-        l.setIcon(icon);
+        l.setIcon(currentCSX);
+
+
+
 
         JFrame f = new JFrame();
         JSlider s = new JSlider(5, 200);
@@ -67,15 +62,16 @@ public class App {
             int value = s.getValue();
             Image newImage = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
             ImageIcon newIcon = new ImageIcon(newImage);
-
+            
             csx.setLocation(cmX + cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
 
-
-            // csx.setLocation(cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
             l.setIcon(newIcon);
             csx.setSize(value, value);
 
         });
+
+
+        
         f.add(s);
         JToggleButton b = new JToggleButton("Show");
         b.addActionListener((ActionEvent ae) -> {
@@ -87,14 +83,36 @@ public class App {
                 csx.setVisible(false);
             }
         });
+
+
+
         JButton monitorBtn = new JButton("Change monitors");
         monitorBtn.addActionListener((ActionEvent ae) -> {
             changeMonitor(csx);
         });
+        JButton fileChooseButton = new JButton("Choose crosshair");
+        fileChooseButton.addActionListener((ActionEvent ae) -> {
+            JFileChooser chooser = new JFileChooser("src\\crosshairs");
+            chooser.showOpenDialog(b);
+            try {
+            File chosenCrosshair = chooser.getSelectedFile();
+                Image newCSX = ImageIO.read(chosenCrosshair);
+                bufferedImage = newCSX.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
+                ImageIcon newIcon = new ImageIcon(bufferedImage);
+                currentCSX = newIcon;
+                
+                l.setIcon(currentCSX);
+            } catch (IOException ex) {
+                
+            }
+            
+        });
+       
 
         f.setLayout(new FlowLayout());
         f.add(b);
         f.add(monitorBtn);
+        f.add(fileChooseButton);
         f.setSize(300, 300);
         f.setLocationRelativeTo(null);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
