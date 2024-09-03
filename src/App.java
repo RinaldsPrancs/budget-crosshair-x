@@ -13,7 +13,7 @@ public class App {
     public static int currentMonitor;
     public static int cmWidth;
     public static int cmHeight;
-
+    public static int cmX;
     public static void changeMonitor(JFrame frame) {
         currentMonitor++;  
         if (currentMonitor == gd.length) {
@@ -21,23 +21,19 @@ public class App {
         }
         cmWidth = gd[currentMonitor].getDefaultConfiguration().getBounds().width;
         cmHeight = gd[currentMonitor].getDefaultConfiguration().getBounds().height;
-        if (currentMonitor == 0) {
-            int currentMonitorWidth = gd[currentMonitor].getDefaultConfiguration().getBounds().width;
-            frame.setLocation(currentMonitorWidth / 2 - (frame.getHeight() / 2), frame.getY());
-        } else if (currentMonitor < gd.length) {
-            int currentMonitorX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
-            frame.setLocation(currentMonitorX + (currentMonitorX / 2 - (frame.getHeight() / 2)), frame.getY());
-        }
-        
-        // if( screen > -1 && screen < gd.length ) {
-        // frame.setLocation(gd[screen].getDefaultConfiguration().getBounds().x+frame.getX(),
-        // frame.getY());
-        // } else if( gd.length > 0 ) {
-        // frame.setLocation(gd[0].getDefaultConfiguration().getBounds().x,
-        // frame.getY());
-        // } else {
-        // throw new RuntimeException( "No Screens Found" );
+        cmX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
+
+        frame.setLocation(cmX + cmWidth / 2 - (frame.getHeight() / 2), frame.getY());
+
+
+        // if (currentMonitor == 0) {
+        //     int currentMonitorWidth = gd[currentMonitor].getDefaultConfiguration().getBounds().width;
+        //     frame.setLocation(currentMonitorWidth / 2 - (frame.getHeight() / 2), frame.getY());
+        // } else if (currentMonitor < gd.length) {
+        //     int currentMonitorX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
+        //     frame.setLocation(currentMonitorX + (currentMonitorX / 2 - (frame.getHeight() / 2)), frame.getY());
         // }
+      
     }
 
     public static JFrame init() {
@@ -56,6 +52,7 @@ public class App {
         currentMonitor = 0;
         cmWidth = gd[currentMonitor].getDefaultConfiguration().getBounds().width;
         cmHeight = gd[currentMonitor].getDefaultConfiguration().getBounds().height;
+        cmX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
         JFrame csx = init();
         BufferedImage bufferedImage = ImageIO.read(new File("src\\crosshairs\\1.png"));
         Image image = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
@@ -67,13 +64,16 @@ public class App {
         JFrame f = new JFrame();
         JSlider s = new JSlider(5, 200);
         s.addChangeListener((ChangeEvent ce) -> {
-            int v = s.getValue();
+            int value = s.getValue();
             Image newImage = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
             ImageIcon newIcon = new ImageIcon(newImage);
 
-            csx.setLocation(cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
+            csx.setLocation(cmX + cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
+
+
+            // csx.setLocation(cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
             l.setIcon(newIcon);
-            csx.setSize(v, v);
+            csx.setSize(value, value);
 
         });
         f.add(s);
@@ -88,7 +88,6 @@ public class App {
             }
         });
         JButton monitorBtn = new JButton("Change monitors");
-
         monitorBtn.addActionListener((ActionEvent ae) -> {
             changeMonitor(csx);
         });
