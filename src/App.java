@@ -28,7 +28,7 @@ public class App {
             int currentMonitorX = gd[currentMonitor].getDefaultConfiguration().getBounds().x;
             frame.setLocation(currentMonitorX + (currentMonitorX / 2 - (frame.getHeight() / 2)), frame.getY());
         }
-
+        
         // if( screen > -1 && screen < gd.length ) {
         // frame.setLocation(gd[screen].getDefaultConfiguration().getBounds().x+frame.getX(),
         // frame.getY());
