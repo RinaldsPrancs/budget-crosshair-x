@@ -6,6 +6,11 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
+
+// TODO 
+// fix image scaling
+// add listed jframe with csx's
+// 
 public class App {
     public static final GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
     public static final GraphicsDevice[] gd = ge.getScreenDevices();
@@ -57,7 +62,7 @@ public class App {
 
 
         JFrame f = new JFrame();
-        JSlider s = new JSlider(5, 200);
+        JSlider s = new JSlider(1, 200);
         s.addChangeListener((ChangeEvent ce) -> {
             int value = s.getValue();
             Image newImage = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
@@ -86,7 +91,7 @@ public class App {
 
 
 
-        JButton monitorBtn = new JButton("Change monitors");
+        JButton monitorBtn = new JButton("Change monitor");
         monitorBtn.addActionListener((ActionEvent ae) -> {
             changeMonitor(csx);
         });
