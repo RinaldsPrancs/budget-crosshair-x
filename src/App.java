@@ -73,13 +73,13 @@ public class App {
         });
 
         f.add(s);
-        JToggleButton b = new JToggleButton("Show");
+        JToggleButton b = new JToggleButton("See");
         b.addActionListener((ActionEvent ae) -> {
             if (b.isSelected()) {
                 b.setText("Hide");
                 csx.setVisible(true);
             } else {
-                b.setText("Show");
+                b.setText("See");
                 csx.setVisible(false);
             }
         });
