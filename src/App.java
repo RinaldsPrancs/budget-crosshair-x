@@ -113,15 +113,54 @@ public class App {
             
         });
        
+        JButton changeCrosshair = new JButton("Change crosshair");
+        changeCrosshair.addActionListener((ActionEvent ae)->{
+            JFrame crosshairFrame = new JFrame("Change crosshair");
+            crosshairFrame.setLocationRelativeTo(null);
+            File directoryPath = new File("src\\crosshairs");
+            String contents[] = directoryPath.list();
+            JPanel panel = new JPanel();
+            panel.setSize(new Dimension(300,300));
+            for (int i = 0; i < contents.length; i++) {
+                System.out.println(contents[i]);
+                JButton temp = new JButton();
+                temp.setPreferredSize(new Dimension(100,100));
+
+                Image tempImg;
+                try {
+                    tempImg = ImageIO.read(new File("src\\crosshairs\\"+ contents[i]));
+                    tempImg = tempImg.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
+                    ImageIcon tempIcon = new ImageIcon(tempImg);
+
+                temp.setIcon(tempIcon);
+                } catch (IOException ex) {
+                }
+                
+                panel.add(temp);
+            }
+            JScrollPane jScrollPane = new JScrollPane(panel);
+
+            jScrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+            jScrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+            crosshairFrame.setLayout(new BorderLayout());
+            crosshairFrame.add(jScrollPane);
+            // crosshairFrame.add(panel);
+            crosshairFrame.setSize(new Dimension(300,300));
+            crosshairFrame.setVisible(true);
+            
+        });
+
 
         f.setLayout(new FlowLayout());
         f.add(b);
         f.add(monitorBtn);
         f.add(fileChooseButton);
+        f.add(changeCrosshair);
         f.setSize(300, 300);
         f.setLocationRelativeTo(null);
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
+        
     }
 }
