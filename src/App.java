@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 
-
 // TODO 
 // fix image scaling
 // add listed jframe with csx's
@@ -20,6 +19,7 @@ public class App {
     public static int cmX;
     public static ImageIcon currentCSX;
     public static Image bufferedImage;
+
     public static void changeMonitor(JFrame frame) {
         currentMonitor++;
         if (currentMonitor == gd.length) {
@@ -58,16 +58,13 @@ public class App {
         csx.add(l);
         l.setIcon(currentCSX);
 
-
-
-
         JFrame f = new JFrame();
         JSlider s = new JSlider(1, 200);
         s.addChangeListener((ChangeEvent ce) -> {
             int value = s.getValue();
             Image newImage = bufferedImage.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
             ImageIcon newIcon = new ImageIcon(newImage);
-            
+
             csx.setLocation(cmX + cmWidth / 2 - (csx.getHeight() / 2), cmHeight / 2 - (csx.getHeight() / 2));
 
             l.setIcon(newIcon);
@@ -75,8 +72,6 @@ public class App {
 
         });
 
-
-        
         f.add(s);
         JToggleButton b = new JToggleButton("Show");
         b.addActionListener((ActionEvent ae) -> {
@@ -89,53 +84,64 @@ public class App {
             }
         });
 
-
-
         JButton monitorBtn = new JButton("Change monitor");
         monitorBtn.addActionListener((ActionEvent ae) -> {
             changeMonitor(csx);
         });
-        JButton fileChooseButton = new JButton("Choose crosshair");
+        JButton fileChooseButton = new JButton("Choose your own crosshair");
         fileChooseButton.addActionListener((ActionEvent ae) -> {
             JFileChooser chooser = new JFileChooser("src\\crosshairs");
             chooser.showOpenDialog(b);
             try {
-            File chosenCrosshair = chooser.getSelectedFile();
+                File chosenCrosshair = chooser.getSelectedFile();
                 Image newCSX = ImageIO.read(chosenCrosshair);
                 bufferedImage = newCSX.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
                 ImageIcon newIcon = new ImageIcon(bufferedImage);
                 currentCSX = newIcon;
-                
                 l.setIcon(currentCSX);
             } catch (IOException ex) {
-                
+
             }
-            
+
         });
-       
-        JButton changeCrosshair = new JButton("Change crosshair");
-        changeCrosshair.addActionListener((ActionEvent ae)->{
+
+        JButton changeCrosshair = new JButton("Change crosshair from presets");
+        changeCrosshair.addActionListener((ae) -> {
             JFrame crosshairFrame = new JFrame("Change crosshair");
             crosshairFrame.setLocationRelativeTo(null);
             File directoryPath = new File("src\\crosshairs");
             String contents[] = directoryPath.list();
             JPanel panel = new JPanel();
-            panel.setSize(new Dimension(300,300));
-            for (int i = 0; i < contents.length; i++) {
-                System.out.println(contents[i]);
+            panel.setSize(new Dimension(300, 300));
+            for (String content : contents) {
+                
                 JButton temp = new JButton();
-                temp.setPreferredSize(new Dimension(100,100));
-
+                temp.setPreferredSize(new Dimension(100, 100));
                 Image tempImg;
                 try {
-                    tempImg = ImageIO.read(new File("src\\crosshairs\\"+ contents[i]));
+                    tempImg = ImageIO.read(new File("src\\crosshairs\\" + content));
                     tempImg = tempImg.getScaledInstance(100, 100, Image.SCALE_DEFAULT);
                     ImageIcon tempIcon = new ImageIcon(tempImg);
+                    temp.setIcon(tempIcon);
 
-                temp.setIcon(tempIcon);
-                } catch (IOException ex) {
-                }
+                    temp.addActionListener((actionEvent) -> {
+                 
+                        Image newCSX;
+                        try {
+                            newCSX = ImageIO.read(new File("src\\crosshairs\\" + content));
+                            bufferedImage = newCSX.getScaledInstance(csx.getHeight(), csx.getHeight(), Image.SCALE_DEFAULT);
+                ImageIcon newIcon = new ImageIcon(bufferedImage);
+                currentCSX = newIcon;
+                l.setIcon(currentCSX);
+                        } catch (IOException e) {
+                        }
                 
+                    });
+
+
+
+                }catch (IOException ex) {
+                }
                 panel.add(temp);
             }
             JScrollPane jScrollPane = new JScrollPane(panel);
@@ -145,11 +151,10 @@ public class App {
             crosshairFrame.setLayout(new BorderLayout());
             crosshairFrame.add(jScrollPane);
             // crosshairFrame.add(panel);
-            crosshairFrame.setSize(new Dimension(300,300));
+            crosshairFrame.setSize(new Dimension(300, 300));
             crosshairFrame.setVisible(true);
-            
-        });
 
+        });
 
         f.setLayout(new FlowLayout());
         f.add(b);
@@ -161,6 +166,5 @@ public class App {
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         f.setVisible(true);
 
-        
     }
 }
